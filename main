@@ -2,6 +2,7 @@ local component = require("component")
 local gpu = component.gpu
 local probe = component.ElnProbe
 local event = require("event")
+local computer = require("computer") -- Include the computer library
 
 
 -- Set up the screen resolution
@@ -142,6 +143,26 @@ event.listen("touch", touchHandler)
 
 -- Initialize the on/off button
 gpu.set(1, 6, "[ Macerator Bank 1 ON  ]")
+
+-- Function to handle touch events for the reboot button
+local function touchHandler(_, _, x, y)
+    -- Check if the reboot button was touched
+    if y == 14 and x >= 1 and x <= 15 then -- Adjust the coordinates as needed
+        -- Display a confirmation message
+        gpu.setForeground(0xFF0000) -- Red color for warning
+        gpu.set(1, 15, "Rebooting...")
+        gpu.setForeground(0xFFFFFF) -- Reset to default color
+        
+        -- Wait for a short period to give the user time to see the message
+        os.sleep(1)
+        
+        -- Reboot the computer
+        computer.shutdown(true)
+    end
+end
+
+-- Register the touch event handler
+event.listen("touch", touchHandler)
 
 
 -- Main loop to display power in real-time
